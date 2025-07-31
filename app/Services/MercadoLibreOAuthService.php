@@ -22,10 +22,11 @@ class MercadoLibreOAuthService
      * @throws Exception
      */
     public function exchangeToken(
-        string $clientId,
-        string $clientSecret,
+        string $grant_type,
+        string $client_id,
+        string $client_secret,
+        string $redirect_uri,
         string $code,
-        string $redirectUri,
     ): array {
         try {
             // Initialize cURL session
@@ -33,11 +34,11 @@ class MercadoLibreOAuthService
             
             // Prepare the request data
             $data = [
-                'grant_type' => self::GRANT_TYPE,
-                'client_id' => $clientId,
-                'client_secret' => $clientSecret,
+                'grant_type' => $grant_type,
+                'client_id' => $client_id,
+                'client_secret' => $client_secret,
                 'code' => $code,
-                'redirect_uri' => $redirectUri,
+                'redirect_uri' => $redirect_uri,
             ];
             
             // Set cURL options
@@ -64,20 +65,21 @@ class MercadoLibreOAuthService
             
             // Decode the response
             $responseData = json_decode($response, true);
-            dd($responseData);
+            return $responseData;
+            // // dd($responseData);
             
-            // Check if JSON decode failed
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception('Invalid JSON response: ' . json_last_error_msg());
-            }
+            // // Check if JSON decode failed
+            // if (json_last_error() !== JSON_ERROR_NONE) {
+            //     throw new Exception('Invalid JSON response: ' . json_last_error_msg());
+            // }
             
-            // Check if request was successful
-            if ($httpCode >= 200 && $httpCode < 300) {
-                return $responseData;
-            }
+            // // Check if request was successful
+            // if ($httpCode >= 200 && $httpCode < 300) {
+            //     return $responseData;
+            // }
 
 
-            throw new Exception('Failed to exchange token: ' . $response->body());
+            // throw new Exception('Failed to exchange token: ' . $response->body());
 
         } catch (Exception $e) {
             Log::error('Exception during OAuth token exchange', [

@@ -23,28 +23,23 @@ class OAuthController extends Controller
     public function exchangeToken(Request $request): JsonResponse
     {
         try {
-            // Validate required parameters
-            $request->validate([
-                'grant_type' => 'required|string',
-                'client_id' => 'required|string',
-                'client_secret' => 'required|string',
-                'code' => 'required|string',
-                'redirect_uri' => 'required|string',
-                'code_verifier' => 'required|string',
-            ]);
+
+            $grant_type = config('services.mercadolibre.grant_type');
+            $client_id = config('services.mercadolibre.client_id');
+            $client_secret = config('services.mercadolibre.client_secret');
+            $redirect_uri = config('services.mercadolibre.redirect_uri');
+            $app_code = config('services.mercadolibre.app_code');
 
             $response = $this->oauthService->exchangeToken(
-                $request->input('grant_type'),
-                $request->input('client_id'),
-                $request->input('client_secret'),
-                $request->input('code'),
-                $request->input('redirect_uri'),
-                $request->input('code_verifier')
+                $grant_type,
+                $client_id,
+                $client_secret,
+                $redirect_uri,
+                $app_code
             );
 
-            // Save token to database
-            $data = $request->only(['grant_type', 'client_id', 'client_secret', 'code', 'redirect_uri', 'code_verifier']);
-            $token = OAuthToken::createFromOAuthResponse($response, $data);
+            // dd($response);
+            $token = OAuthToken::createFromOAuthResponse($response);
 
             return response()->json([
                 'success' => true,

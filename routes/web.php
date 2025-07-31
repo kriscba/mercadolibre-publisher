@@ -12,9 +12,6 @@ Route::prefix('oauth')->group(function () {
     // Route for OAuth token exchange using the service
     Route::post('/exchange-token', [OAuthController::class, 'exchangeToken'])->name('oauth.exchange-token');
     
-    // Route for OAuth token exchange using direct cURL
-    Route::post('/exchange-token-direct', [OAuthController::class, 'exchangeTokenDirect'])->name('oauth.exchange-token-direct');
-    
     // Route for OAuth test interface
     Route::get('/test', function () {
         return view('oauth-test');

@@ -112,20 +112,13 @@
         
         <div class="tabs">
             <div class="tab active" onclick="switchTab('service')">Service Method</div>
-            <div class="tab" onclick="switchTab('direct')">Direct cURL Method</div>
+            {{-- <div class="tab" onclick="switchTab('direct')">Direct cURL Method</div> --}}
         </div>
 
         <div id="service-tab" class="tab-content active">
             <form id="oauth-form-service" action="{{ route('oauth.exchange-token') }}" method="POST">
                 @csrf
                 <button type="submit" class="btn">Exchange Token (Service)</button>
-            </form>
-        </div>
-
-        <div id="direct-tab" class="tab-content">
-            <form id="oauth-form-direct" action="{{ route('oauth.exchange-token-direct') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn">Exchange Token (Direct cURL)</button>
             </form>
         </div>
 

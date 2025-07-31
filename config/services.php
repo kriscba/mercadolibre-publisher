@@ -36,10 +36,11 @@ return [
     ],
 
     'mercadolibre' => [
+        'grant_type' => env('MERCADOLIBRE_GRANT_TYPE') ?? 'authorization_code',
         'client_id' => env('MERCADOLIBRE_CLIENT_ID'),
         'client_secret' => env('MERCADOLIBRE_CLIENT_SECRET'),
         'redirect_uri' => env('MERCADOLIBRE_REDIRECT_URI'),
-        'site_code' => env('MERCADOLIBRE_SITE_CODE'),
+        'app_code' => env('MERCADOLIBRE_APP_CODE'),
     ],
 
 ];

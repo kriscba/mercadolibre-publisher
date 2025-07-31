@@ -11,6 +11,7 @@ class OAuthToken extends Model
 {
     use HasFactory;
 
+    protected $table = 'oauth_tokens';
     protected $fillable = [
         'user_id',
         'client_id',
@@ -138,8 +139,15 @@ class OAuthToken extends Model
     /**
      * Create or update token from OAuth response
      */
-    public static function createFromOAuthResponse(array $response, array $requestData): self
+    public static function createFromOAuthResponse(array $response): self
     {
+
+        $grant_type = config('services.mercadolibre.grant_type');
+        $client_id = config('services.mercadolibre.client_id');
+        $client_secret = config('services.mercadolibre.client_secret');
+        $redirect_uri = config('services.mercadolibre.redirect_uri');
+        $app_code = config('services.mercadolibre.app_code');
+
         // Calculate expiration time
         $expiresAt = null;
         if (isset($response['expires_in'])) {
@@ -147,7 +155,7 @@ class OAuthToken extends Model
         }
 
         // Check if token already exists for this client/user
-        $existingToken = self::where('client_id', $requestData['client_id'])
+        $existingToken = self::where('client_id', $client_id)
             ->when(isset($response['user_id']), function ($query) use ($response) {
                 return $query->where('user_id', $response['user_id']);
             })
@@ -172,16 +180,16 @@ class OAuthToken extends Model
         // Create new token
         return self::create([
             'user_id' => $response['user_id'] ?? null,
-            'client_id' => $requestData['client_id'],
+            'client_id' => $client_id,
             'access_token' => $response['access_token'],
             'refresh_token' => $response['refresh_token'] ?? null,
             'token_type' => $response['token_type'] ?? 'Bearer',
             'expires_in' => $response['expires_in'] ?? null,
             'expires_at' => $expiresAt,
             'scope' => $response['scope'] ?? null,
-            'grant_type' => $requestData['grant_type'],
-            'redirect_uri' => $requestData['redirect_uri'] ?? null,
-            'code_verifier' => $requestData['code_verifier'] ?? null,
+            'grant_type' => $response['grant_type'] ?? 'authorization_code',
+            'redirect_uri' => $redirect_uri,
+            'code_verifier' => $app_code,
             'status' => 'active',
             'last_used_at' => now(),
         ]);
