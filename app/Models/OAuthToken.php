@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
 
@@ -12,6 +13,7 @@ class OAuthToken extends Model
     use HasFactory;
 
     protected $table = 'oauth_tokens';
+    
     protected $fillable = [
         'user_id',
         'client_id',
@@ -195,32 +197,4 @@ class OAuthToken extends Model
         ]);
     }
 
-    /**
-     * Scope to get only active tokens
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('status', 'active');
-    }
-
-    /**
-     * Scope to get only valid (not expired) tokens
-     */
-    public function scopeValid($query)
-    {
-        return $query->where('status', 'active')
-            ->where(function ($q) {
-                $q->whereNull('expires_at')
-                  ->orWhere('expires_at', '>', now());
-            });
-    }
-
-    /**
-     * Scope to get expired tokens
-     */
-    public function scopeExpired($query)
-    {
-        return $query->where('status', 'active')
-            ->where('expires_at', '<=', now());
-    }
 }

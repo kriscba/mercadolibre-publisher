@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\MercadoLibre;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\MercadoLibreOAuthService;
 use App\Models\OAuthToken;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class OAuthController extends Controller
 {
@@ -20,7 +22,7 @@ class OAuthController extends Controller
     /**
      * Exchange authorization code for access token
      */
-    public function exchangeToken(Request $request): JsonResponse
+    public function getToken(Request $request): JsonResponse
     {
         try {
 
@@ -30,7 +32,7 @@ class OAuthController extends Controller
             $redirect_uri = config('services.mercadolibre.redirect_uri');
             $app_code = config('services.mercadolibre.app_code');
 
-            $response = $this->oauthService->exchangeToken(
+            $response = $this->oauthService->getToken(
                 $grant_type,
                 $client_id,
                 $client_secret,
@@ -213,4 +215,5 @@ class OAuthController extends Controller
             ], 500);
         }
     }
+
 } 

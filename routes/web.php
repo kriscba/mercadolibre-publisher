@@ -1,16 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OAuthController;
+use App\Http\Controllers\MercadoLibre\OAuthController;
+use App\Http\Controllers\MercadoLibre\MLUserController;
+use App\Http\Controllers\ItemController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 // OAuth Routes
+Route::get('/user-info', [MLUserController::class, 'getAdmin'])->name('oauth.user-info');
+Route::get('/user-create', [MLUserController::class, 'createUserTest'])->name('oauth.create-user');
+Route::get('/items-category', [ItemController::class, 'getItemCategory'])->name('items.category');
+Route::get('/items-validate', [ItemController::class, 'validateItem'])->name('items.validate');
+
 Route::prefix('oauth')->group(function () {
     // Route for OAuth token exchange using the service
-    Route::post('/exchange-token', [OAuthController::class, 'exchangeToken'])->name('oauth.exchange-token');
+    Route::post('/exchange-token', [OAuthController::class, 'getToken'])->name('oauth.exchange-token');
     
     // Route for OAuth test interface
     Route::get('/test', function () {
